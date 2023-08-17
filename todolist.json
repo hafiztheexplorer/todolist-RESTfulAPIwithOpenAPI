@@ -1,0 +1,36 @@
+{
+"openapi" : "3.0.3",
+"info": {
+  "title": "RESTful API ToDoList App",
+  "description": "mencoba membuat RESTful API untuk aplikasi ToDoList",
+  "version": "1.0",
+  "contact": {
+    "name": "Hafiz The Explorer",
+    "email": "hafiz@mail.com",
+    "url": "https://www.hafiztheexplorer.com"
+  },
+  "license": {
+    "name": "APACHE 2.0",
+"url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+  }
+},
+"servers":[
+  {
+    "description": "App ToDoList RESTful API Server",
+    "url": "https://{environment}.hafiztheexplorer.com/api/v1/servers",
+    "variables": {
+      "environment": {
+        "default": "development",
+        "description": "Server Environment",
+        "enum": [
+          "development", 
+          "qualityassurance", 
+          "production"
+        ]
+      }
+  }
+}
+
+],
+"paths": {}
+}
