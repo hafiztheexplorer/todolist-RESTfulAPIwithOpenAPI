@@ -16,8 +16,8 @@
 },
 "servers":[
   {
-    "description": "App ToDoList RESTful API Server",
     "url": "https://{environment}.hafiztheexplorer.com/api/v1/servers",
+    "description": "App ToDoList RESTful API Server",
     "variables": {
       "environment": {
         "default": "development",
@@ -30,7 +30,424 @@
       }
   }
 }
-
 ],
-"paths": {}
+"externalDocs": {
+  "description": "External documentation on Github Hafiz The Explorer",
+  "url": "https://github.com/hafiztheexplorer"
+},
+"paths": {
+  "/todolist":{
+    "get":{
+      "summary": "mengambil data todolistnya",
+      "description": "hanya akan mengembalikan data to-do-list yang aktif, data to-do-list yang sudah dihapus atau semua data to-do-list tidak akan di return",
+      "parameters": [
+        {
+          "name": "include_done",
+          "in": "query",
+          "description": "include done todolist dalam hasil",
+          "required": false,
+          "schema":{
+            "type": "boolean",
+            "default":true,
+            "nullable": true
+          }
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "description": "mencari data todolist by name",
+          "required": false,
+          "schema":{
+            "type": "string",
+            "nullable": false,
+            "maxLength": 100,
+            "minLength": 0
+          },
+          "examples": {
+            "java":{
+              "description": "example name Java",
+              "value": "example_java"
+            },
+            "go":{
+              "description": "example name go",
+              "value": "example_go"
+            }
+          }
+        }
+      ],
+      "responses": {
+        "200":{
+          "description": "Get todolist success",
+          "content": {
+            "application/json": {
+              "schema":{
+                "type": "array",
+                "items":{
+                    "type": "object",
+                    "properties": {
+                    "id":{
+                      "type": "string",
+                      "description": "todolist id",
+                      "nullable": false
+                    },
+                    "name":{
+                      "type": "string",
+                      "description": "todolist name",
+                      "nullable": false
+                    },
+                    "priority":{
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "tags":{
+                      "type": "array",
+                      "items":{
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples":{
+                "success":{
+                  "description": "example success get all todolist",
+                  "value":[
+                    {
+                      "id": "1",
+                      "name": "go",
+                      "priority": 1,
+                      "tags":[
+                        "go",
+                        "programming"
+                      ]
+                    },
+                    {
+                      "id": "2",
+                      "name": "java",
+                      "priority": 2,
+                      "tags":[
+                        "java",
+                        "programming"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      } 
+    },
+    "post":{
+      "summary": "menambah data todolistnya",
+      "description": "hanya akan menambah data to-do-list",
+      "requestBody":{
+        "required":true,
+        "content": {
+          "application/json": {
+            "schema":{
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "required": true
+                },
+                "priority":{
+                  "type": "integer",
+                  "format": "int32",
+                  "required": true,
+                  "default":1
+                },
+                "tags": {
+                  "type": "array",
+                  "required": false,
+                  "minItems": 1,
+                  "items":{
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+            }
+          },
+          "examples": {
+            "go":{
+              "description": "example post todolist go",
+              "value": {
+                "name": "go",
+                "priority": 1,
+                "tags": [
+                  "go",
+                  "programming"
+                ]
+              }
+            },
+            "java":{
+              "description": "example post todolist java",
+              "value": {
+                "name": "java",
+                "priority": 2,
+                "tags": [
+                  "java",
+                  "programming"
+                ]
+              }
+            }
+          }
+        }
+        }
+      },
+      "responses": {
+        "200":{
+          "description": "success post todolist",
+          "content": {
+            "application/json": {
+              "schema":{
+                "type": "object",
+                "properties": {
+                "id":{
+                  "type": "string",
+                  "description": "todolist id",
+                  "nullable": false
+                },
+                "name":{
+                  "type": "string",
+                  "description": "todolist name",
+                  "nullable": false
+                },
+                "priority":{
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "tags":{
+                  "type": "array",
+                  "items":{
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "examples":{
+              "go":{
+                "description": "example success post all todolist",
+                "value":{
+                    "id": "1",
+                    "name": "go",
+                    "priority": 1,
+                    "tags":[
+                      "go",
+                      "programming"
+                    ]
+                  }
+                },
+                "java":{
+                  "description": "example success post all todolist",
+                  "value":{
+                      "id": "2",
+                      "name": "java",
+                      "priority": 2,
+                      "tags":[
+                        "java",
+                        "programming"
+                      ]
+                    }
+                  }
+
+            }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/todolist/{todolistId}":{
+    "delete":{
+      "summary": "menghapus data todolistnya",
+      "description": "hanya akan menghapus data to-do-list yang dipilih",
+      "parameters": [
+        {
+          "name": "todolistId",
+          "in": "path",
+          "description": "todolist id mana yang dihapus",
+          "required": true,
+          "schema":{
+            "type": "string",
+            "default": "masukkan id yang akan dihapus",
+            "maxLength": 100,
+            "minLength": 1
+          }
+        }
+      ],
+      "responses": {
+        "200":{
+          "description": "success delete todolist",
+          "content": {
+            "application/json": {
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "success":{
+                    "type": "boolean"
+                  }
+                }
+              },
+              "examples":{
+                "success":{
+                  "description": "success delete todolist",
+                  "value": {
+                    "success": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "put":{
+      "summary": "mengedit data todolistnya",
+      "description": "hanya akan mengedit data to-do-list yang dipilih",
+      "parameters": [
+        {
+          "name": "todolistId",
+          "in": "path",
+          "description": "todolist id mana yang diedit",
+          "required": true,
+          "schema":{
+            "type": "string",
+            "default": "masukkan id yang akan diedit/diupdate",
+            "maxLength": 100,
+            "minLength": 1
+          },
+          "examples": {
+            "go":{
+              "description": "sample to do list id for go",
+              "value": "1"
+            },
+            "java":{
+              "description": "sample to do list id for java",
+              "value": "2"
+            }
+          }
+        }
+      ],
+      "requestBody":{
+        "required":true,
+        "content": {
+          "application/json": {
+            "schema":{
+              "type": "object",
+              "properties": {
+              "name":{
+                "type":"string",
+                "minLength":1,
+                "required":true
+              },
+              "priority":{
+                "type":"integer",
+                "format": "int32",
+                "default":1
+              },
+              "tags": {
+                "type": "array",
+                "required": false,
+                "minItems": 1,
+                "items":{
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+              
+            }
+            },
+            "examples": {
+              "go":{
+                "description": "example put to do list go",
+                "value": {
+                  "name": "go",
+                  "priority": 1,
+                  "tags": [
+                    "go",
+                    "programming"
+                  ]
+                }
+              },
+              "java":{
+                "description": "example put to do list java",
+                "value": {
+                  "name": "java",
+                  "priority": 2,
+                  "tags": [
+                    "java",
+                    "programming"
+                  ]
+                }
+              }
+            }
+            }
+          }
+        },
+      "responses": {
+        "200":{
+          "description": "success put todolist",
+          "content": {
+            "application/json": {
+              "schema":{
+                "type": "object",
+                "properties": {
+                "id":{
+                  "type": "string",
+                  "description": "todolist id",
+                  "nullable": false
+                },
+                "name":{
+                  "type": "string",
+                  "description": "todolist name",
+                  "nullable": false
+                },
+                "priority":{
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "tags":{
+                  "type": "array",
+                  "items":{
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "examples":{
+              "go":{
+                "description": "example success put todolist",
+                "value":{
+                    "id": "1",
+                    "name": "go",
+                    "priority": 1,
+                    "tags":[
+                      "go",
+                      "programming"
+                    ]
+                  }
+                },
+                "java":{
+                  "description": "example success put todolist",
+                  "value":{
+                      "id": "2",
+                      "name": "java",
+                      "priority": 2,
+                      "tags":[
+                        "java",
+                        "programming"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
